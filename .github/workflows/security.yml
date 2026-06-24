@@ -1,8 +1,13 @@
 name: security
 
-# Pipeline de seguridad (SAST + secretos + lint).
+# Pipeline de seguridad (lint + escaneo de secretos).
 # Corre en cada Pull Request y en cada push a main.
 # El deploy NO ocurre aquí: lo hace AWS Amplify al conectar la rama main.
+#
+# SAST: lo aporta SonarQube Cloud mediante "Automatic Analysis" (la app de
+# SonarCloud conectada al repo), que publica el check "SonarCloud Code Analysis"
+# en cada PR. Por eso aquí NO incluimos un job de SonarScanner: Automatic
+# Analysis y el scanner basado en CI no pueden coexistir en el mismo proyecto.
 on:
   push:
     branches: [main]
@@ -44,24 +49,3 @@ jobs:
       - name: Ejecutar gitleaks
         # Falla el job (exit code != 0) si encuentra cualquier secreto.
         run: gitleaks detect --source . --no-banner --redact --verbose
-
-  sast:
-    name: SAST (SonarQube Cloud)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          # SonarQube necesita el historial completo para el análisis de PRs.
-          fetch-depth: 0
-      # Acción oficial de SonarSource. La antigua sonarcloud-github-action está
-      # descontinuada. (v5 es la usada en este demo; existen majors más nuevos.)
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          # SONAR_TOKEN: secret del repo (Settings → Secrets and variables → Actions).
-          # No se necesita SONAR_HOST_URL para SonarQube Cloud.
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          # Quality Gate bloqueante: el job falla si el Quality Gate no pasa.
-          args: >
-            -Dsonar.qualitygate.wait=true
