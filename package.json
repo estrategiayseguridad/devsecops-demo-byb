@@ -12,7 +12,7 @@
     "lint:fix": "eslint \"src/**/*.{ts,js}\" --fix"
   },
   "devDependencies": {
-    "@eslint/js": "^9.18.0",
+    "@eslint/js": "^10.0.1",
     "eslint": "^9.18.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0",
