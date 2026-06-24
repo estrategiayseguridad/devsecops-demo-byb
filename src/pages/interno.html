@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel interno — Portal de Proveedores</title>
+    <link rel="stylesheet" href="../styles/main.css" />
+  </head>
+  <body>
+    <!--
+      VULN: A01 – Broken Access Control.
+      Esta página "interna" NO está enlazada en la navegación, pero se publica
+      como archivo estático: cualquiera que adivine /pages/interno.html entra.
+      "Seguridad por oscuridad" NO es control de acceso. Además muestra datos
+      que aparentan ser sensibles (lista de proveedores, notas internas).
+
+      FIX (rama main): no existe esta página. El contenido sensible va detrás de
+      autenticación en un backend, nunca en archivos estáticos públicos.
+    -->
+    <header class="site-header">
+      <nav class="nav">
+        <a class="brand" href="../index.html">Portal de Proveedores<span class="dot">.</span></a>
+        <span class="badge">ÁREA INTERNA</span>
+      </nav>
+    </header>
+    <main>
+      <section class="hero">
+        <h1>Panel interno (no enlazado)</h1>
+        <p class="lead">
+          Esta página simula un área "interna" protegida solo por no estar
+          enlazada. En un sitio estático no hay control de acceso real.
+        </p>
+      </section>
+      <section class="panel">
+        <h3>Proveedores (datos de ejemplo)</h3>
+        <ul>
+          <li>ACME S.A. — contacto: ventas@acme.example — estado: activo</li>
+          <li>Globex — contacto: cuentas@globex.example — estado: en revisión</li>
+        </ul>
+        <p>Nota interna: renovar contrato de hosting antes del cierre de trimestre.</p>
+      </section>
+    </main>
+    <footer class="footer">Portal de Proveedores — Demo (página interna de ejemplo).</footer>
+    <script type="module" src="./interno.ts"></script>
+  </body>
+</html>

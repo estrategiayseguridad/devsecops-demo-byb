@@ -15,6 +15,8 @@ export default defineConfig({
         acerca: resolve(__dirname, "src/pages/acerca.html"),
         contacto: resolve(__dirname, "src/pages/contacto.html"),
         buscar: resolve(__dirname, "src/pages/buscar.html"),
+        // VULN: A01 – la página "interna" se publica como estático (sin control).
+        interno: resolve(__dirname, "src/pages/interno.html"),
       },
     },
   },
