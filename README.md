@@ -72,13 +72,16 @@ echo '{"tool_input":{"file_path":"src/lib/config.ts","content":"const k = \"CHAN
 
 Con el PR de `feature/demo-vuln` → `main` abierto, los checks fallan:
 
-- **gitleaks** → encuentra el secreto hardcodeado (A02). ❌
-- **SonarQube Cloud (SAST)** → detecta XSS por `innerHTML` (A03) y open redirect
-  (A10); el **Quality Gate bloqueante** (`-Dsonar.qualitygate.wait=true`) hace
-  fallar el job. ❌
+- **ESLint (lint)** → la regla `no-restricted-properties` marca `innerHTML` (A03). ❌
+- **gitleaks (secrets)** → encuentra el secreto hardcodeado (A02). ❌
+- **SonarCloud Code Analysis (SAST)** → detecta XSS por `innerHTML` (A03) y open
+  redirect (A10). Lo aporta **Automatic Analysis** de SonarCloud (la app
+  conectada al repo), no un job de Actions. ❌
 - **OWASP ZAP (DAST)** → escanea la instancia efímera y marca cabeceras de
-  seguridad ausentes (A05) y el XSS reflejado en `?q=`. (Reporte como artifact.)
-- **Dependabot** → alerta por `lodash` vulnerable (A06).
+  seguridad ausentes (A05) y el XSS reflejado en `?q=`. (Reporte como artifact;
+  informativo, no aborta el job.)
+- **Dependabot / `npm audit`** → `lodash 4.17.11` con CVEs (A06). `npm audit`
+  reporta "1 critical" en esta rama.
 
 ### Paso 3 — Aplicar el fix → verde
 
@@ -134,29 +137,27 @@ npx serve dist -l 8080   # http://127.0.0.1:8080
 4. Amplify detecta [`amplify.yml`](amplify.yml) (build) y aplica
    [`customHttp.yml`](customHttp.yml) (cabeceras). Confirma y despliega.
 
-### 2. GitHub — secret y configuración de Sonar
+### 2. SonarQube Cloud (SAST) — Automatic Analysis
 
-1. Repo → **Settings → Secrets and variables → Actions → New repository secret**:
-   - `SONAR_TOKEN` = el token de tu proyecto en SonarQube Cloud.
-2. Edita [`sonar-project.properties`](sonar-project.properties) y reemplaza los
-   placeholders `CHANGE_ME`:
-   - `sonar.organization` = tu organización en SonarQube Cloud.
-   - `sonar.projectKey` = la clave de tu proyecto.
-
-### 3. SonarQube Cloud (SAST)
+Este proyecto usa **Automatic Analysis** (la app de SonarCloud conectada al
+repo); **no** requiere `SONAR_TOKEN` ni un job de SonarScanner en Actions.
 
 1. Entra a <https://sonarcloud.io> con tu cuenta de GitHub.
-2. Importa la organización y crea el proyecto a partir de este repo.
-   (Repo **público** = análisis **gratuito**.)
-3. Genera el token y úsalo como `SONAR_TOKEN` (paso anterior).
+2. Importa la organización `estrategiayseguridad` y crea el proyecto a partir de
+   este repo (repo **público** = análisis **gratuito**).
+3. Deja activado **Automatic Analysis**. SonarCloud publicará el check
+   **`SonarCloud Code Analysis`** en cada PR.
 
-### 4. (Opcional, recomendado y gratis en repo público) Branch protection
+> Nota: Automatic Analysis y el SonarScanner basado en CI **no** pueden coexistir
+> en el mismo proyecto. Por eso `security.yml` solo corre lint + gitleaks.
+
+### 3. (Opcional, recomendado y gratis en repo público) Branch protection
 
 Repo → **Settings → Branches → Add branch ruleset** sobre `main`:
 
 - Exigir Pull Request antes de mergear.
-- Exigir que pasen los checks de `security.yml` (**lint**, **secrets**, **sast**)
-  antes de mergear.
+- Exigir que pasen los checks: **Lint (ESLint)**, **Secret scanning (gitleaks)**
+  y **SonarCloud Code Analysis** antes de mergear.
 
 Así, ningún cambio inseguro puede llegar a `main` (y por tanto a Amplify).
 
@@ -167,10 +168,10 @@ Así, ningún cambio inseguro puede llegar a `main` (y por tanto a Amplify).
 ```
 src/                  HTML, main.ts, pages/, styles/, lib/ (config, dom, redirect)
 docs/threat-model.md  Modelo STRIDE (mermaid) + mapeo a las vulns
-.github/workflows/    security.yml (lint+gitleaks+SonarQube), dast.yml (ZAP)
+.github/workflows/    security.yml (lint + gitleaks), dast.yml (OWASP ZAP)
 .github/dependabot.yml SCA semanal (npm + github-actions)
 .claude/              Harness: CLAUDE.md, skills/, agents/, settings.json, hooks/
-sonar-project.properties  Config de SonarQube (placeholders)
+sonar-project.properties  Config de SonarQube (sources/exclusions)
 amplify.yml           Build spec de Amplify
 customHttp.yml        Cabeceras de seguridad (el FIX de la misconfig A05)
 ```
