@@ -1,0 +1,24 @@
+{
+  "name": "devsecops-demo-byb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portal de Proveedores — Demo. Web informacional estática (Vite + vanilla TS) para una demostración en vivo de DevSecOps.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "lint": "eslint \"src/**/*.{ts,js}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,js}\" --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0",
+    "vite": "^6.0.7"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

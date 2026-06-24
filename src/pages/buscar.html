@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buscar — Portal de Proveedores</title>
+    <link rel="stylesheet" href="../styles/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav">
+        <a class="brand" href="../index.html"
+          >Portal de Proveedores<span class="dot">.</span></a
+        >
+        <a href="../index.html">Inicio</a>
+        <a href="./acerca.html">Acerca de</a>
+        <a href="./contacto.html">Contacto</a>
+        <a href="./buscar.html">Buscar</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Buscar en el portal</h1>
+        <p class="lead">
+          Escribe un término para buscar (demo: solo refleja el término en
+          pantalla). También puedes usar <code>?q=tu-busqueda</code> en la URL.
+        </p>
+      </section>
+
+      <section class="panel">
+        <form id="search-form" novalidate>
+          <label for="q">Término de búsqueda</label>
+          <input id="q" name="q" type="search" placeholder="p. ej. onboarding" />
+          <button type="submit">Buscar</button>
+        </form>
+
+        <div class="result" id="search-result" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Portal de Proveedores — Demo · Material educativo de DevSecOps.
+    </footer>
+
+    <script type="module" src="./buscar.ts"></script>
+  </body>
+</html>

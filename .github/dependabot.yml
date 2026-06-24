@@ -1,0 +1,22 @@
+version: 2
+# Dependabot cubre el SCA (Software Composition Analysis) en main:
+# revisa semanalmente las dependencias npm y abre PRs con actualizaciones,
+# incluyendo parches de seguridad de paquetes con CVEs.
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "security"
+
+  # También mantenemos al día las propias GitHub Actions del pipeline.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ci"

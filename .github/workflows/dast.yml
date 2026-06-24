@@ -1,0 +1,65 @@
+name: dast
+
+# DAST con OWASP ZAP (baseline) contra una instancia EFÍMERA del sitio,
+# levantada dentro del runner. NUNCA se escanea el sitio público.
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  zap-baseline:
+    name: OWASP ZAP Baseline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Instalar dependencias y construir
+        run: |
+          npm ci
+          npm run build
+
+      - name: Servir dist/ en localhost:8080
+        # Instancia efímera solo para el escaneo; se sirve la salida estática.
+        run: |
+          npx --yes serve dist -l 8080 &
+          echo "Esperando a que el sitio responda..."
+          for i in $(seq 1 30); do
+            if curl -sSf http://127.0.0.1:8080 >/dev/null 2>&1; then
+              echo "Sitio arriba."
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "El sitio no respondió a tiempo." >&2
+          exit 1
+
+      - name: ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.14.0
+        with:
+          target: "http://127.0.0.1:8080"
+          # No abortamos el job por hallazgos: este escaneo es informativo
+          # (el reporte se sube como artifact y se revisa en el PR).
+          fail_action: false
+          # Repo público: no escribir issues automáticamente.
+          allow_issue_writing: false
+          cmd_options: "-a"
+
+      - name: Subir reporte de ZAP
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-baseline-report
+          path: |
+            report_html.html
+            report_md.md
+            report_json.json
+          if-no-files-found: ignore

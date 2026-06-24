@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acerca de — Portal de Proveedores</title>
+    <link rel="stylesheet" href="../styles/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav">
+        <a class="brand" href="../index.html"
+          >Portal de Proveedores<span class="dot">.</span></a
+        >
+        <a href="../index.html">Inicio</a>
+        <a href="./acerca.html">Acerca de</a>
+        <a href="./contacto.html">Contacto</a>
+        <a href="./buscar.html">Buscar</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Acerca de este demo</h1>
+        <p class="lead">
+          Este sitio es una pieza de capacitación de
+          <strong>Estrategia y Seguridad Consulting</strong> para mostrar un
+          flujo <em>DevSecOps</em> de extremo a extremo.
+        </p>
+      </section>
+
+      <section class="panel">
+        <p>
+          El objetivo es demostrar cómo un pipeline de seguridad detecta y
+          bloquea vulnerabilidades antes de llegar a producción:
+        </p>
+        <ul>
+          <li><strong>SAST</strong> — análisis estático con SonarQube Cloud.</li>
+          <li><strong>Secret scanning</strong> — gitleaks en cada PR.</li>
+          <li><strong>DAST</strong> — OWASP ZAP contra una instancia efímera.</li>
+          <li><strong>SCA</strong> — Dependabot vigilando dependencias.</li>
+        </ul>
+        <p>
+          La rama <code>main</code> es la versión segura y es la única que se
+          despliega (vía AWS Amplify). Las vulnerabilidades viven en una rama de
+          demostración que solo existe como Pull Request para que el pipeline la
+          rechace.
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Portal de Proveedores — Demo · Material educativo de DevSecOps.
+    </footer>
+
+    <script type="module" src="./acerca.ts"></script>
+  </body>
+</html>

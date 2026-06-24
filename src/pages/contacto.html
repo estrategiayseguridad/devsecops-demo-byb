@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contacto — Portal de Proveedores</title>
+    <link rel="stylesheet" href="../styles/main.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav">
+        <a class="brand" href="../index.html"
+          >Portal de Proveedores<span class="dot">.</span></a
+        >
+        <a href="../index.html">Inicio</a>
+        <a href="./acerca.html">Acerca de</a>
+        <a href="./contacto.html">Contacto</a>
+        <a href="./buscar.html">Buscar</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Contacto</h1>
+        <p class="lead">
+          Escríbenos un mensaje. Este formulario es de demostración: no envía
+          datos a ningún servidor, solo refleja tu mensaje en pantalla.
+        </p>
+      </section>
+
+      <section class="panel">
+        <form id="contact-form" novalidate>
+          <label for="name">Nombre</label>
+          <input id="name" name="name" type="text" autocomplete="name" />
+
+          <label for="message">Mensaje</label>
+          <textarea id="message" name="message"></textarea>
+
+          <button type="submit">Enviar mensaje</button>
+        </form>
+
+        <div class="result" id="contact-result" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Portal de Proveedores — Demo · Material educativo de DevSecOps.
+    </footer>
+
+    <script type="module" src="./contacto.ts"></script>
+  </body>
+</html>
