@@ -56,7 +56,7 @@ jobs:
       # Acción oficial de SonarSource. La antigua sonarcloud-github-action está
       # descontinuada. (v5 es la usada en este demo; existen majors más nuevos.)
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v8
         env:
           # SONAR_TOKEN: secret del repo (Settings → Secrets and variables → Actions).
           # No se necesita SONAR_HOST_URL para SonarQube Cloud.
