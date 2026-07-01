@@ -48,4 +48,20 @@ jobs:
           gitleaks version
       - name: Ejecutar gitleaks
         # Falla el job (exit code != 0) si encuentra cualquier secreto.
-        run: gitleaks detect --source . --no-banner --redact --verbose
+        #
+        # En un Pull Request escaneamos SOLO los commits que el PR agrega
+        # (rango base..HEAD), no todo el historial del repo. Así un PR limpio no
+        # se ve tumbado por secretos que ya vivían en otros commits/ramas del
+        # repositorio (p. ej. la rama demo insegura). Los secretos NUEVOS del PR
+        # sí se detectan y bloquean.
+        #
+        # En push a main escaneamos el árbol completo (defensa en profundidad).
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "PR: escaneando solo el rango ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+            gitleaks detect --source . --no-banner --redact --verbose \
+              --log-opts="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+          else
+            echo "push a ${{ github.ref_name }}: escaneo completo del repositorio"
+            gitleaks detect --source . --no-banner --redact --verbose
+          fi
